@@ -14,10 +14,19 @@ process.env.CHROME_BIN = require('puppeteer').executablePath();
 module.exports = function setKarmaConfig(config) {
   const baseConfig = {
     basePath: '../',
+<<<<<<< HEAD
+    browsers: ['PhantomJS_Sized'],
+    client: {
+      mocha: {
+        grep: opts.grep,
+      },
+    },
+=======
     browsers: ['ChromeHeadless'],
     browserDisconnectTimeout: 120000, // default 2000
     browserDisconnectTolerance: 1, // default 0
     browserNoActivityTimeout: 300000, // default 10000
+>>>>>>> master
     colors: true,
     frameworks: ['mocha'],
     files: [
@@ -49,6 +58,10 @@ module.exports = function setKarmaConfig(config) {
       'test/karma.tests.js': ['webpack', 'sourcemap'],
     },
     reporters: ['dots'],
+<<<<<<< HEAD
+    singleRun: false,
+=======
+>>>>>>> master
     webpack: {
       devtool: 'inline-source-map',
       plugins: [
@@ -75,6 +88,20 @@ module.exports = function setKarmaConfig(config) {
     webpackServer: {
       noInfo: true,
     },
+<<<<<<< HEAD
+    customLaunchers: {
+      'PhantomJS_Sized': {
+        base: 'PhantomJS',
+        options: {
+          viewportSize: { // Matches JSDom size.
+            width: 1024,
+            height: 768,
+          },
+        },
+      },
+    },
+  });
+=======
     customLaunchers: {},
   };
 
@@ -124,4 +151,5 @@ module.exports = function setKarmaConfig(config) {
   }
 
   config.set(newConfig);
+>>>>>>> master
 };

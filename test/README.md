@@ -62,12 +62,22 @@ Our tests run on different browsers to increase the coverage:
 
 ### Browser API level
 
+<<<<<<< HEAD
+##### Unit test a specific Component (also works with `:watch`)
+`-c` / `--component`
+`npm run test:unit -- -c Avatar`
+
+##### Unit test with a mocha grep (also works with `:watch`)
+`-g` / `--grep`
+`npm run test:unit -- -g "Grep this"`
+=======
 In the end, components are going to be used in a real browser.
 The DOM is just one dimension of that environment,
 so we also need to take into account the rendering engine.
 
 #### Run the visual regression tests
 `yarn test:regressions`
+>>>>>>> master
 
 Next, we are using [docker](https://github.com/docker/docker) to take screenshots and comparing them with the baseline. It allows catching regressions like this one:
 
@@ -108,7 +118,11 @@ or [GraphicsMagick](http://http://www.graphicsmagick.org/) being installed.
 
 ## Writing Tests
 
+<<<<<<< HEAD
+For all unit tests, please use the [shallow renderer](https://github.com/airbnb/enzyme/blob/master/docs/api/shallow.md) from `enzyme` unless the Component being tested requires a DOM. [Here's](https://github.com/mui-org/material-ui/blob/v0.x/src/Avatar/Avatar.spec.js) a small shallow rendered test to get you started.
+=======
 For all unit tests, please use the [shallow renderer](https://github.com/airbnb/enzyme/blob/master/docs/api/shallow.md) from `enzyme` unless the Component being tested requires a DOM. [Here's](https://github.com/mui-org/material-ui/blob/master/src/Avatar/Avatar.spec.js) a small shallow rendered test to get you started.
+>>>>>>> master
 
 If the Component being unit tested requires a DOM, you can use the [mount api](https://github.com/airbnb/enzyme/blob/master/docs/api/mount.md) from `enzyme`. For some operations, you may still need to use the React test utils, but try to use the `enzyme` API as much as possible.
 

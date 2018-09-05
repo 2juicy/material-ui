@@ -1,11 +1,29 @@
+<<<<<<< HEAD
+node_modules
+npm-debug.log
+build
+coverage
+.eslintcache
+
+# Exclude compiled files
+/lib
+icon-builder/js
+icon-builder/jsx
+
+# Exclude IDE project folders
+=======
 # The best pattern people should follow is ignoring the editors' files in their
 # global .gitignore configuration file.
 # However, in order to prevent issues. We also ignore editors' files here.
+>>>>>>> master
 .idea
 .vscode
 
 *.log
 .DS_STORE
+<<<<<<< HEAD
+yarn.lock
+=======
 /.eslintcache
 /.next
 /.nyc_output
@@ -19,3 +37,4 @@
 build
 node_modules
 package-lock.json
+>>>>>>> master
