@@ -1,96 +1,94 @@
-const path = require('path');
-const argv = process.argv.slice(2);
-const opts = {
-  grep: undefined,
+// @flow weak
+
+const webpack = require('webpack');
+
+const browserStack = {
+  username: process.env.BROWSERSTACK_USERNAME,
+  accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
+  build: `material-ui-${new Date().toISOString()}`,
 };
 
-argv.forEach((arg) => {
-  if (/^--grep=/.test(arg)) {
-    opts.grep = arg.replace('--grep=', '').trim();
-    opts.coverage = false; // disable if grepping
-  }
-});
+process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 // Karma configuration
-module.exports = function(config) {
-  config.set({
-    autoWatch: false,
+module.exports = function setKarmaConfig(config) {
+  const baseConfig = {
     basePath: '../',
+<<<<<<< HEAD
     browsers: ['PhantomJS_Sized'],
     client: {
       mocha: {
         grep: opts.grep,
       },
     },
+=======
+    browsers: ['ChromeHeadless'],
+    browserDisconnectTimeout: 120000, // default 2000
+    browserDisconnectTolerance: 1, // default 0
+    browserNoActivityTimeout: 300000, // default 10000
+>>>>>>> master
     colors: true,
     frameworks: ['mocha'],
     files: [
-      'node_modules/babel-polyfill/dist/polyfill.js',
       {
         pattern: 'test/karma.tests.js',
-        watched: false,
+        watched: true,
         served: true,
         included: true,
       },
     ],
     plugins: [
-      'karma-phantomjs-launcher',
+      'karma-chrome-launcher',
       'karma-mocha',
       'karma-sourcemap-loader',
       'karma-webpack',
       'karma-mocha-reporter',
     ],
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+    /**
+     * possible values:
+     * - config.LOG_DISABLE
+     * - config.LOG_ERROR
+     * - config.LOG_WARN
+     * - config.LOG_INFO
+     * - config.LOG_DEBUG
+     */
     logLevel: config.LOG_INFO,
     port: 9876,
     preprocessors: {
       'test/karma.tests.js': ['webpack', 'sourcemap'],
     },
     reporters: ['dots'],
+<<<<<<< HEAD
     singleRun: false,
+=======
+>>>>>>> master
     webpack: {
       devtool: 'inline-source-map',
+      plugins: [
+        new webpack.DefinePlugin({
+          'process.env': {
+            NODE_ENV: JSON.stringify('test'),
+          },
+        }),
+      ],
       module: {
-        loaders: [
+        rules: [
           {
             test: /\.js$/,
-            loader: 'babel',
+            loader: 'babel-loader',
             exclude: /node_modules/,
-            query: {
-              cacheDirectory: true,
-            },
-          },
-          {
-            test: /\.json$/,
-            loader: 'json',
           },
         ],
-        noParse: [
-          /node_modules\/sinon\//,
-        ],
       },
-      resolve: {
-        alias: {
-          'material-ui': path.resolve(__dirname, '../src'),
-          sinon: 'sinon/pkg/sinon.js',
-        },
-        extensions: ['', '.js', '.jsx', '.json'],
-        modulesDirectories: [
-          'node_modules',
-          './',
-        ],
-      },
-      externals: {
-        'jsdom': 'window',
-        'react/lib/ExecutionEnvironment': true,
-        'react/lib/ReactContext': 'window',
-        'text-encoding': 'window',
-        'react/addons': true, // For enzyme
+      node: {
+        // Some tests import fs
+        fs: 'empty',
       },
     },
     webpackServer: {
       noInfo: true,
     },
+<<<<<<< HEAD
     customLaunchers: {
       'PhantomJS_Sized': {
         base: 'PhantomJS',
@@ -103,4 +101,55 @@ module.exports = function(config) {
       },
     },
   });
+=======
+    customLaunchers: {},
+  };
+
+  let newConfig = baseConfig;
+
+  if (browserStack.accessKey) {
+    newConfig = Object.assign({}, baseConfig, {
+      browserStack,
+      browsers: baseConfig.browsers.concat([
+        'BrowserStack_Chrome',
+        'BrowserStack_Firefox',
+        'BrowserStack_Safari',
+        'BrowserStack_Edge',
+      ]),
+      plugins: baseConfig.plugins.concat(['karma-browserstack-launcher']),
+      customLaunchers: Object.assign({}, baseConfig.customLaunchers, {
+        BrowserStack_Chrome: {
+          base: 'BrowserStack',
+          os: 'OS X',
+          os_version: 'Sierra',
+          browser: 'Chrome',
+          browser_version: '49.0',
+        },
+        BrowserStack_Firefox: {
+          base: 'BrowserStack',
+          os: 'Windows',
+          os_version: '10',
+          browser: 'Firefox',
+          browser_version: '45.0',
+        },
+        BrowserStack_Safari: {
+          base: 'BrowserStack',
+          os: 'OS X',
+          os_version: 'Sierra',
+          browser: 'Safari',
+          browser_version: '10.1',
+        },
+        BrowserStack_Edge: {
+          base: 'BrowserStack',
+          os: 'Windows',
+          os_version: '10',
+          browser: 'Edge',
+          browser_version: '14.0',
+        },
+      }),
+    });
+  }
+
+  config.set(newConfig);
+>>>>>>> master
 };

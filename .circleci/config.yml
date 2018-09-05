@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 version: 2
 jobs:
   build:
@@ -6,6 +7,22 @@ jobs:
       - image: circleci/node:6.11
     steps:
       # Fetch the code
+=======
+defaults: &defaults
+  working_directory: /tmp/material-ui
+  docker:
+    - image: circleci/node:9.10
+restore_repo: &restore_repo
+  restore_cache:
+    keys:
+      - v1-repo-{{ .Branch }}-{{ .Revision }}
+version: 2
+jobs:
+  checkout:
+    <<: *defaults
+    steps:
+      - *restore_repo
+>>>>>>> master
       - checkout
       - run:
           name: Check versions and env
@@ -16,3 +33,148 @@ jobs:
             docker-compose --version
             env
             yarn cache dir
+<<<<<<< HEAD
+=======
+      - restore_cache:
+          key: v1-yarn-sha-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install js dependencies
+          command: yarn
+      - run:
+          name: Should not have any git not staged
+          command: git diff --exit-code
+      - save_cache:
+          key: v1-yarn-sha-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn/v1
+      - save_cache:
+          key: v1-repo-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - /tmp/material-ui
+  test_unit:
+    <<: *defaults
+    steps:
+      - *restore_repo
+      - run:
+          name: Lint
+          command: yarn lint
+      - run:
+          name: Flow
+          command: yarn flow
+      - run:
+          name: TypeScript
+          command: yarn typescript
+      - run:
+          name: Tests fake browser
+          command: yarn test:coverage
+      - run:
+          name: Check coverage generated
+          command: |
+            if ! [[ -s coverage/lcov.info ]]
+            then
+              exit 1
+            fi
+      - run:
+          name: Coverage
+          command: bash <(curl -s https://codecov.io/bash)
+  test_material-ui-x:
+    <<: *defaults
+    steps:
+      - *restore_repo
+      - run:
+          name: material-ui-icons
+          command: |
+            if [[ ((`git diff --raw master | grep packages/material-ui-icons` > 0))]]; then
+              echo "changes, let's run the tests"
+              cd packages/material-ui-icons && yarn test
+            else
+              echo "no changes "
+            fi
+      - run:
+          name: material-ui-codemod
+          command: |
+            if [[ ((`git diff --raw master | grep packages/material-ui-codemod` > 0))]]; then
+              echo "changes, let's run the tests"
+              cd packages/material-ui-codemod && yarn test
+            else
+              echo "no changes "
+            fi
+      - run:
+          name: eslint-plugin-material-ui
+          command: |
+            if [[ ((`git diff --raw master | grep packages/eslint-plugin-material-ui` > 0))]]; then
+              echo "changes, let's run the tests"
+              cd packages/eslint-plugin-material-ui && yarn test
+            else
+              echo "no changes "
+            fi
+  test_build:
+    <<: *defaults
+    # This isn't user facing code.
+    # Let's take advantage of the most up to date node version.
+    docker:
+      - image: circleci/node:9.10
+    steps:
+      - *restore_repo
+      - run:
+          name: Can we generate the material-ui build?
+          command: cd packages/material-ui && yarn build
+      - run:
+          name: Can we build the docs?
+          command: yarn docs:build
+      - run:
+          name: Is the size acceptable?
+          command: yarn size
+  test_browser:
+    <<: *defaults
+    steps:
+      - *restore_repo
+      - run:
+          name: Can we generate the api of the docs?
+          command: yarn docs:api
+      - run:
+          name: Should not have any git not staged
+          command: git diff --exit-code
+      - run:
+          name: Install dependencies for Chrome Headless
+          # From https://github.com/GoogleChrome/puppeteer/blob/811415bc8c47f7882375629b57b3fe186ad61ed4/docs/troubleshooting.md#chrome-headless-doesnt-launch
+          command: sudo apt-get install -y gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
+      - run:
+          name: Tests real browsers
+          command: yarn test:karma
+  test_regressions:
+    <<: *defaults
+    docker:
+      - image: circleci/node:9.10
+      - image: selenium/standalone-chrome:3.11.0
+    steps:
+      - *restore_repo
+      - run:
+          name: Visual regression tests
+          command: |
+            DOCKER_TEST_URL=http://$(ip addr show lo | grep "inet\b" | awk '{print $2}' | cut -d/ -f1):3090 yarn test:regressions
+            yarn argos
+workflows:
+  version: 2
+  pipeline:
+    jobs:
+      - checkout
+      - test_unit:
+          requires:
+            - checkout
+      - test_material-ui-x:
+          requires:
+            - checkout
+      - test_browser:
+          requires:
+            - checkout
+      - test_build:
+          requires:
+            - checkout
+      - test_regressions:
+          requires:
+            - test_material-ui-x
+            - test_unit
+            - test_browser
+            - test_build
+>>>>>>> master

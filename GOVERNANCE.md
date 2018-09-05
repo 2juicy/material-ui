@@ -1,5 +1,10 @@
 # Mui-Org Governance
 
+<<<<<<< HEAD
+=======
+<p class="description">Material-UI is an open source project that depends on contributions from the community.</p>
+
+>>>>>>> master
 ## Overview
 
 Mui-Org houses projects related to [Material-UI](http://www.material-ui.com/), a set of [React](https://reactjs.org/) components
@@ -35,7 +40,11 @@ also contribute in the following ways.
 and [issues](https://github.com/mui-org/material-ui/issues).
 - Reporting bugs or missing features by [creating an issue](https://github.com/mui-org/material-ui/issues/new).
 - Fixing bugs, adding features, and
+<<<<<<< HEAD
 [improving our documentation](https://github.com/mui-org/material-ui/tree/v1-beta/docs) by
+=======
+[improving our documentation](https://github.com/mui-org/material-ui/tree/master/docs) by
+>>>>>>> master
 [submitting a pull request](https://github.com/mui-org/material-ui/pulls).
 
 ### Committers
@@ -70,7 +79,11 @@ In addition to their participation as a committer, Core Team members have the fo
 - Ability to [publish a release](https://github.com/mui-org/material-ui/releases).
 - Access to Material-UI's [Twitter](https://twitter.com/i/notifications) and Medium account.
 - Owner access to [mui-org on GitHub](https://github.com/mui-org).
+<<<<<<< HEAD
 - Admin access to various tools and services ([npm](https://www.npmjs.com/package/material-ui),
+=======
+- Admin access to various tools and services ([npm](https://www.npmjs.com/package/@material-ui/core),
+>>>>>>> master
 [CircleCi](https://circleci.com/gh/mui-org/material-ui),
 [BrowserStack](https://www.browserstack.com/), [Gitter](https://gitter.im/mui-org/material-ui)).
 - Admin access to all financial accounts.
